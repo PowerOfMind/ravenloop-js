@@ -1,14 +1,21 @@
 import { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { ChannelGrid, Dashboard } from "./components";
+import { ChannelGrid } from "./components/ChannelGrid";
 import getYTChannel from "../src/helpers/getYTChannel";
 import CryptoJS from "crypto-js";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { DashboardD3 } from './components/DAshboardD3';
+import LoginForm from './components/LoginForm';
 const YOUTUBE_API_KEY = "AIzaSyBcmm3mbU3SODgXeSIMKYv6zb_mIcabJsA";
 
 const App = () => {
   const [channelName, setChannelName] = useState("");
   const [channelData, setChannelData] = useState(null);
   const [channelVideos, setChannelVideos] = useState([]);
+  const [currentComponent, setCurrentComponent] = useState("ChannelGrid");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  if (!isLoggedIn) {
+    return <LoginForm onLogin={() => setIsLoggedIn(true)} />;
+  }
 
   const searchChannel = async () => {
     const youTubeChannel = new getYTChannel(channelName, YOUTUBE_API_KEY);
@@ -23,43 +30,51 @@ const App = () => {
   };
 
   return (
-    <Router>
-      <div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/channel-grid">Channel Grid</Link>
-            </li>
-            <li>
-              <Link to="/dashboard">Dashboard</Link>
-            </li>
-          </ul>
-        </nav>
+    <div className="container">
+      {isLoggedIn && (
+        <>
+        <header className="d-flex justify-content-center py-3">
+        <h1 className="h2">Proceso RavenLoop</h1>
+      </header>
 
+      <div className="input-group mb-3">
         <input
           type="text"
+          className="form-control"
           value={channelName}
           onChange={(e) => setChannelName(e.target.value)}
+          placeholder="Nombre del canal"
         />
-        <button onClick={searchChannel}>Buscar</button>
-
-        <Routes>
-          <Route
-            path="/channel-grid"
-            element={
-              <ChannelGrid
-                channelData={channelData}
-                channelVideos={channelVideos}
-              />
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={<Dashboard channelData={channelData} />}
-          />
-        </Routes>
+        <button className="btn btn-primary" onClick={searchChannel}>
+          Buscar
+        </button>
       </div>
-    </Router>
+
+      <nav className="nav nav-pills">
+        <button
+          className="nav-link"
+          onClick={() => setCurrentComponent("ChannelGrid")}
+        >
+          Videos
+        </button>
+        <button
+          className="nav-link"
+          onClick={() => setCurrentComponent("Dashboard")}
+        >
+          Dashboard
+        </button>
+      </nav>
+
+      {currentComponent === "ChannelGrid" && channelData && (
+        <ChannelGrid channelData={channelData} channelVideos={channelVideos} />
+      )}
+      {currentComponent === "Dashboard" && channelData && (
+        <DashboardD3 channelData={channelData} channelVideos={channelVideos} />
+      )}
+        </>
+      )}
+      
+    </div>
   );
 };
 
