@@ -2,10 +2,9 @@ import { useState } from "react";
 import { ChannelGrid } from "./components/ChannelGrid";
 import getYTChannel from "../src/helpers/getYTChannel";
 import CryptoJS from "crypto-js";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { DashboardD3 } from "./components/DashboardD3";
 import LoginForm from "./components/LoginForm";
-const YOUTUBE_API_KEY = "AIzaSyBcmm3mbU3SODgXeSIMKYv6zb_mIcabJsA";
+import { Constants } from './utils/Constants';
 
 const App = () => {
   const [channelName, setChannelName] = useState("");
@@ -18,7 +17,7 @@ const App = () => {
   }
 
   const searchChannel = async () => {
-    const youTubeChannel = new getYTChannel(channelName, YOUTUBE_API_KEY);
+    const youTubeChannel = new getYTChannel(channelName,Constants.YOUTUBE_API_KEY );
     const data = await youTubeChannel.getAllData();
     setChannelData(data.channelData);
     setChannelVideos(

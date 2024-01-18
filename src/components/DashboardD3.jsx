@@ -53,7 +53,7 @@ export const DashboardD3 = ({ channelData, channelVideos }) => {
       .padding(0.5);
 
     const maxVideos = d3.max(videosByYear, (d) => d[1]);
-    
+    console.log('maxVideos', maxVideos);
 
     const yScale = d3
       .scaleLinear()

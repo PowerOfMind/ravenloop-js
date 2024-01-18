@@ -43,10 +43,5 @@ class getYTChannel {
     return { channelData, channelVideos };
   }
 }
-// Uso de la clase
-/* const youTubeChannel = new getYTChannel( 'nombreDelCanal', 'tuClaveDeAPI' );
-youTubeChannel.getAllData().then( data => {
-  console.log( data );
-} ); */
 
 export default getYTChannel;
