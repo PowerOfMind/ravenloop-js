@@ -3,8 +3,8 @@ import { ChannelGrid } from "./components/ChannelGrid";
 import getYTChannel from "../src/helpers/getYTChannel";
 import CryptoJS from "crypto-js";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { DashboardD3 } from './components/DAshboardD3';
-import LoginForm from './components/LoginForm';
+import { DashboardD3 } from "./components/DashboardD3";
+import LoginForm from "./components/LoginForm";
 const YOUTUBE_API_KEY = "AIzaSyBcmm3mbU3SODgXeSIMKYv6zb_mIcabJsA";
 
 const App = () => {
@@ -33,47 +33,52 @@ const App = () => {
     <div className="container">
       {isLoggedIn && (
         <>
-        <header className="d-flex justify-content-center py-3">
-        <h1 className="h2">Proceso RavenLoop</h1>
-      </header>
+          <header className="d-flex justify-content-center py-3">
+            <h1 className="h2">Prueba técnica RavenLoop</h1>
+          </header>
 
-      <div className="input-group mb-3">
-        <input
-          type="text"
-          className="form-control"
-          value={channelName}
-          onChange={(e) => setChannelName(e.target.value)}
-          placeholder="Nombre del canal"
-        />
-        <button className="btn btn-primary" onClick={searchChannel}>
-          Buscar
-        </button>
-      </div>
+          <div className="input-group mb-4">
+            <input
+              type="text"
+              className="form-control"
+              value={channelName}
+              onChange={(e) => setChannelName(e.target.value)}
+              placeholder="Nombre del canal"
+            />
+            <button className="btn btn-primary" onClick={searchChannel}>
+              Buscar
+            </button>
+          </div>
 
-      <nav className="nav nav-pills">
-        <button
-          className="nav-link"
-          onClick={() => setCurrentComponent("ChannelGrid")}
-        >
-          Videos
-        </button>
-        <button
-          className="nav-link"
-          onClick={() => setCurrentComponent("Dashboard")}
-        >
-          Dashboard
-        </button>
-      </nav>
+          <nav className="nav nav-pills">
+            <button
+              className="nav-link"
+              onClick={() => setCurrentComponent("ChannelGrid")}
+            >
+              Videos
+            </button>
+            <button
+              className="nav-link"
+              onClick={() => setCurrentComponent("Dashboard")}
+            >
+              Dashboard
+            </button>
+          </nav>
 
-      {currentComponent === "ChannelGrid" && channelData && (
-        <ChannelGrid channelData={channelData} channelVideos={channelVideos} />
-      )}
-      {currentComponent === "Dashboard" && channelData && (
-        <DashboardD3 channelData={channelData} channelVideos={channelVideos} />
-      )}
+          {currentComponent === "ChannelGrid" && channelData && (
+            <ChannelGrid
+              channelData={channelData}
+              channelVideos={channelVideos}
+            />
+          )}
+          {currentComponent === "Dashboard" && channelData && (
+            <DashboardD3
+              channelData={channelData}
+              channelVideos={channelVideos}
+            />
+          )}
         </>
       )}
-      
     </div>
   );
 };

@@ -1,10 +1,9 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 export const ChannelGrid = ({ channelData, channelVideos }) => {
   const [currentPage, setCurrentPage] = useState(0);
-  const videosPerPage = 10;
+  const videosPerPage = 9;
 
   const sortedVideos = channelVideos.sort(
     (a, b) => new Date(b.snippet.publishedAt) - new Date(a.snippet.publishedAt)
@@ -25,6 +24,7 @@ export const ChannelGrid = ({ channelData, channelVideos }) => {
           >
             <div className="card h-100">
               <img
+                key={video.snippet.title}
                 src={video.snippet.thumbnails.medium.url}
                 alt={video.snippet.title}
                 className="card-img-top"

@@ -1,14 +1,12 @@
 import { useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 import * as d3 from "d3";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 export const DashboardD3 = ({ channelData, channelVideos }) => {
   const refBar = useRef();
-  const refLine = useRef();
 
   useEffect(() => {
     dibujarGraficoBar();
-    dibujarGraficoLinea();
   }, [channelVideos]);
 
   const dibujarGraficoBar = () => {
@@ -21,8 +19,12 @@ export const DashboardD3 = ({ channelData, channelVideos }) => {
     const svg = d3
       .select(refBar.current)
       .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
+      .attr(
+        "viewBox",
+        `0 0 ${width + margin.left + margin.right} ${
+          height + margin.top + margin.bottom
+        }`
+      )
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -50,9 +52,12 @@ export const DashboardD3 = ({ channelData, channelVideos }) => {
       .range([0, width])
       .padding(0.5);
 
+    const maxVideos = d3.max(videosByYear, (d) => d[1]);
+    
+
     const yScale = d3
       .scaleLinear()
-      .domain([0, d3.max(videosByYear, (d) => d[1])])
+      .domain([0, maxVideos]) 
       .range([height, 0]);
 
     svg
@@ -67,7 +72,8 @@ export const DashboardD3 = ({ channelData, channelVideos }) => {
       .attr("fill", "steelblue");
 
     const xAxis = d3.axisBottom(xScale).tickFormat((d) => `${d}`);
-    const yAxis = d3.axisLeft(yScale).tickFormat((d) => `${d} vídeos`);
+    const yAxis = d3.axisLeft(yScale).ticks(10);
+
 
     svg
       .append("g")
@@ -93,62 +99,7 @@ export const DashboardD3 = ({ channelData, channelVideos }) => {
       .attr("fill", "#5D6971")
       .text("Vídeos subidos");
   };
-  const dibujarGraficoLinea = () => {
-    d3.select(refLine.current).selectAll("*").remove();
 
-    const margin = { top: 20, right: 20, bottom: 70, left: 40 },
-      width = 600 - margin.left - margin.right,
-      height = 300 - margin.top - margin.bottom;
-
-    const svg = d3
-      .select(refLine.current)
-      .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    const data = channelVideos.map((video) => ({
-      date: new Date(video.snippet.publishedAt),
-      views: Number(video.statistics.viewCount),
-    }));
-
-    const xScale = d3
-      .scaleTime()
-      .domain(d3.extent(data, (d) => d.date))
-      .range([0, width]);
-
-    const yScale = d3
-      .scaleLinear()
-      .domain([0, d3.max(data, (d) => d.views)])
-      .range([height, 0]);
-
-    const line = d3
-      .line()
-      .x((d) => xScale(d.date))
-      .y((d) => yScale(d.views));
-
-    svg
-      .append("path")
-      .datum(data)
-      .attr("fill", "none")
-      .attr("stroke", "steelblue")
-      .attr("stroke-width", 1.5)
-      .attr("d", line);
-
-    const xAxis = d3
-      .axisBottom(xScale)
-      .ticks(d3.timeYear.every(1))
-      .tickFormat(d3.timeFormat("%Y"));
-    const yAxis = d3.axisLeft(yScale);
-
-    svg
-      .append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
-
-    svg.append("g").call(yAxis);
-  };
 
 
   return (
@@ -159,4 +110,16 @@ export const DashboardD3 = ({ channelData, channelVideos }) => {
       <div ref={refBar}></div>
     </div>
   );
+};
+
+DashboardD3.propTypes = {
+  channelData: PropTypes.shape({
+    snippet: PropTypes.object.isRequired,
+    statistics: PropTypes.object.isRequired,
+  }).isRequired,
+  channelVideos: PropTypes.shape({
+    snippet: PropTypes.object.isRequired,
+    statistics: PropTypes.object.isRequired,
+    filter: PropTypes.func.isRequired,
+    }).isRequired,
 };

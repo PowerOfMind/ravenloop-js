@@ -1,16 +1,19 @@
-import React, { useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { useState } from "react";
+import PropTypes from "prop-types";
 
 const LoginForm = ({ onLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (username === "CEO" && password === "password") {
+    if (!username.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+      setError("El nombre de usuario debe ser un correo electrónico válido.");
+    } else if (username === "daniel.vidal@ravenloop.com" && password === "password") {
       onLogin();
     } else {
-      alert("Acceso denegado");
+      setError("El nombre de usuario o la contraseña son incorrectos.");
     }
   };
 
@@ -41,6 +44,7 @@ const LoginForm = ({ onLogin }) => {
                 onChange={(e) => setPassword(e.target.value)}
               />
               <label htmlFor="password">Contraseña</label>
+              {error && <div className="error" style={{color: "red"}}>{error}</div>}
             </div>
             <button className="w-100 btn btn-lg btn-primary" type="submit">
               Iniciar sesión
@@ -50,6 +54,9 @@ const LoginForm = ({ onLogin }) => {
       </div>
     </div>
   );
+};
+LoginForm.propTypes = {
+  onLogin: PropTypes.func.isRequired,
 };
 
 export default LoginForm;
